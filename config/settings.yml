@@ -3,5 +3,5 @@ supporthub_header:
     default: true
     client: true
   supporthub_header_override_url:
-    default: ''
+    default: ""
     client: false
