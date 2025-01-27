@@ -1,0 +1,7 @@
+supporthub_header:
+  supporthub_header_enabled:
+    default: true
+    client: true
+  supporthub_header_override_url:
+    default: ''
+    client: false

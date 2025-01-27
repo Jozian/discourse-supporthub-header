@@ -1,0 +1,6 @@
+en:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          supporthub_header: "SupportHub Header Plugin"
