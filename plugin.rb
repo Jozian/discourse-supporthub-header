@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# name: supporthub-header
+# name: supporthub_header
 # about: Injects proper header for SupportHub implementations
 # version: 1.0.0
 # authors: Illya Klymov <xanf@jozian.com>
@@ -50,7 +50,7 @@ after_initialize do
           response.body
         else
           Rails.logger.error("Failed to fetch remote: #{response.code} - #{response.message}")
-          ""
+            ""
         end
       rescue StandardError => e
         Rails.logger.error("Error fetching remote: #{e.message}")
@@ -60,6 +60,7 @@ after_initialize do
       def get_host(request)
         override_url = SiteSetting.supporthub_header_override_url
 
+        Rails.logger.warn(request.headers)
         return override_url if override_url.present?
         host = request.headers["X-Forwarded-Host"] || request.host
         port = request.headers["X-Forwarded-Port"] || request.port
