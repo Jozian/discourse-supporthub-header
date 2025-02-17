@@ -50,7 +50,7 @@ after_initialize do
           response.body
         else
           Rails.logger.error("Failed to fetch remote: #{response.code} - #{response.message}")
-            ""
+          ""
         end
       rescue StandardError => e
         Rails.logger.error("Error fetching remote: #{e.message}")
