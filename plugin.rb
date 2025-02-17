@@ -61,9 +61,11 @@ after_initialize do
         override_url = SiteSetting.supporthub_header_override_url
 
         return override_url if override_url.present?
-        host = request.host
-        port = request.port
-        protocol = request.ssl? ? "https" : "http"
+        host = request.headers["X-Forwarded-Host"] || request.host
+        port = request.headers["X-Forwarded-Port"] || request.port
+        protocol = request.headers["X-Forwarded-Proto"] || (request.ssl? ? "https" : "http")
+
+        Rails.logger.warn("Using host: #{host}, port: #{port}, protocol: #{protocol}")
 
         host = "#{protocol}://#{host}"
         host << ":#{port}" if port != 80 && port != 443
