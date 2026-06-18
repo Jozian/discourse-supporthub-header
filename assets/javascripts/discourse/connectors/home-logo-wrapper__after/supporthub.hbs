@@ -1,0 +1,14 @@
+{{! Glimmer-header (Discourse 3.3+) connector. The new header replaced the
+    widget "home-logo" outlet with a "home-logo-wrapper" WRAPPER outlet, and
+    wrapper outlets are NOT extended by a plain connector + yield. Their content
+    goes into the synthetic "name__before" / "name__after" outlets (what
+    api.renderBeforeWrapperOutlet / renderAfterWrapperOutlet target). So this
+    connector lives at "connectors/home-logo-wrapper__after/", rendering the
+    SupportHub header right after the logo inside the (flex:1) wrapper. The
+    legacy "connectors/home-logo/supporthub.hbs" still covers older
+    (widget-header) Discourse, so both generations are supported. }}
+{{#if siteSettings.supporthub_header_enabled}}
+  <div class="supporthub-plugin">
+    {{{site.supporthub_header_html}}}
+  </div>
+{{/if}}

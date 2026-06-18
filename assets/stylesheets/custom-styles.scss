@@ -2,8 +2,57 @@
   box-sizing: border-box;
 }
 
+// The wrapper outlet holds BOTH the logo (the `.title` ember view) and our
+// `home-logo-wrapper__after` connector. Make it a horizontal flex row so the
+// nav sits to the RIGHT of the logo, inline, rather than stacking below it.
 .home-logo-wrapper-outlet {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+}
+
+// Top-header nav: the `home-logo` widget outlet on old Discourse and the
+// `home-logo-wrapper__after` connector on the glimmer header (3.3+). The
+// SupportHub `/discourse/header` fragment is a bare `<nav><ul>` with NO
+// classes (it is designed to inline into the hub's own public site, which
+// styles it via Tailwind), so style it into a horizontal header bar here —
+// otherwise it renders as a raw, vertical, bulleted list in Discourse's chrome.
+.home-logo-wrapper-outlet .supporthub-plugin,
+.home-logo .supporthub-plugin {
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5em;
+  }
+
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  a,
+  a:visited {
+    color: var(--header_primary);
+    text-transform: uppercase;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  a:hover {
+    color: var(--tertiary);
+  }
+
+  // The fragment injects its `<link rel=stylesheet>` tags inline; keep them
+  // out of the flow so they never occupy header space.
+  link {
+    display: none;
+  }
 }
 
 .sidebar-sections.supporthub-links {
@@ -33,12 +82,11 @@
   }
 }
 
-// The sidebar sidelinks duplicate the header nav and are meant for narrow
-// viewports only. `sidelinks.hbs` tagged them with the Tailwind class
-// `xl:!hidden`, but Tailwind is not compiled into the Discourse asset bundle,
-// so that class matched no rule: the links leaked onto every viewport and
-// overlapped the header nav in the top-left on desktop. Hide them at the xl
-// breakpoint (1280px) with a real rule.
+// The sidebar variant is the MOBILE fallback for the top-header nav. The
+// plugin's connector tags it `xl:!hidden`, but that Tailwind utility class is
+// not loaded inside Discourse, so the sidebar list would otherwise duplicate
+// the header nav on desktop. Hide it on wide viewports with a real media query
+// (matches Tailwind's `xl` breakpoint = 1280px).
 @media (min-width: 1280px) {
   .sidebar-sections.supporthub-links {
     display: none;
