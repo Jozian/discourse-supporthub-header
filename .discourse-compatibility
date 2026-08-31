@@ -1,0 +1,24 @@
+# Which ref of this plugin each Discourse core version should check out.
+#
+# Format: `<core version constraint>: <plugin git ref>`, lowest matching
+# entry wins. Parsed by `Discourse.find_compatible_resource`
+# (core `lib/version_compatibility.rb`) and applied at image build time by
+# `rake plugin:pull_compatible_all`, which our `web-only.yml` build runs via
+# the `plugin_compatibility` hook. Cores not matched here get the default
+# branch.
+#
+# Why there is an entry at all: `web-only.yml` clones this repo with no ref,
+# so every forum we run loads whatever is on `main` — and we only test
+# against dev's core. Dev is on calendar versioning (`2026.8.0-latest.1`)
+# while support.primero.org is still on `3.6.0.beta3-latest`, so one commit
+# has to satisfy both. This entry stops that being true by accident.
+#
+# bc2e5d1 is the last commit with `.hbs` connectors, which is what
+# support.primero.org is verifiably running today. Cores older than the
+# calendar-version era stay on it; dev gets the `.gjs` conversion, which
+# `2026.8.0-latest` requires.
+#
+# ⚠️ This pins the pre-2026.7 forums to bc2e5d1 for good: later plugin
+# fixes will NOT reach them until this ref is bumped. Bump it (or delete the
+# entry) when support.primero.org's core is upgraded.
+< 2026.7.0: bc2e5d1
