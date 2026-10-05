@@ -6,6 +6,42 @@
   flex: 1;
 }
 
+// Horizon lays the header out as a grid,
+// `"logo lspace extra-info rspace panel"`, so `flex: 1` above does nothing
+// there and the outlet is held to the logo column (~190px): the nav wraps
+// into a vertical stack over the sidebar. Span the outlet up to the panel.
+// Under a flex header `grid-column` is ignored.
+//
+// Once a topic is scrolled, its title (`.extra-info-wrapper`) takes the
+// middle of the header; keep only the logo then. Without this the nav is
+// squeezed into 2-3 lines that run into the title, under either layout.
+//
+// Desktop only: below 1280px the hub hides its embedded header and the
+// sidebar links take over.
+@media (min-width: 1280px) {
+  .d-header > .wrap .contents > .home-logo-wrapper-outlet {
+    grid-column: logo-start / rspace-end;
+    align-self: center;
+    min-width: 0;
+  }
+
+  .d-header > .wrap .contents:has(> .extra-info-wrapper) {
+    > .home-logo-wrapper-outlet {
+      grid-column: logo;
+    }
+
+    .supporthub-plugin .public-header-nav {
+      display: none;
+    }
+  }
+
+  // The hub sizes the logo for its own, taller header.
+  .d-header .supporthub-plugin .public-header-logo {
+    max-height: calc(var(--header-offset, 4em) - 0.5em);
+    width: auto;
+  }
+}
+
 .sidebar-sections.supporthub-links {
   flex-grow: 0;
   flex-shrink: 0;
