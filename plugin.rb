@@ -16,10 +16,13 @@ require "net/http"
 after_initialize do
   module ::RemoteHeader
     class << self
+      # One cached copy per forum locale: the hub translates the header's page
+      # titles, and a single shared copy showed every visitor whichever
+      # language filled the cache (in practice English, the fetch sent none).
       def cached_header_html(guardian)
         Rails
           .cache
-          .fetch("supporthub_header_html", expires_in: 1.minute) do
+          .fetch("supporthub_header_html_#{hub_locale}", expires_in: 1.minute) do
             fetch_header_html(guardian.request)
           end
       end
@@ -27,9 +30,16 @@ after_initialize do
       def cached_links(guardian)
         Rails
           .cache
-          .fetch("supporthub_sidebar_links", expires_in: 1.minute) do
+          .fetch("supporthub_sidebar_links_#{hub_locale}", expires_in: 1.minute) do
             fetch_sidebar_links(guardian.request)
           end
+      end
+
+      # The visitor's forum locale as the hub spells it: `pt_BR` -> `pt-BR`.
+      # The hub matches it case-insensitively against the tenant's languages,
+      # falling back from a regional tag to its base (`en_GB` -> `en`).
+      def hub_locale
+        I18n.locale.to_s.tr("_", "-")
       end
 
       private
@@ -69,7 +79,7 @@ after_initialize do
       end
 
       def build_url(request, type)
-        "#{get_host(request)}/discourse/#{type}"
+        "#{get_host(request)}/discourse/#{type}?lang=#{CGI.escape(hub_locale)}"
       end
     end
   end
